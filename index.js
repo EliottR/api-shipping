@@ -1,13 +1,16 @@
 // Add Express
 const express = require("express");
 var bodyParser = require("body-parser");
-const { default: axios } = require("axios");
+var http = require("http");
+
 // Initialize Express
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-let waitingProducts = [];
+const httpServer = http.createServer(app);
+
+process.waitingProducts = [];
 
 // Create GET request
 app.get("/api/ping", (req, res) => {
@@ -21,26 +24,23 @@ app.post("/api/shipping", (req, res) => {
     throw new Error("nbProducts is not a number");
   }
 
-  waitingProducts.push({ orderId, nbProducts });
+  process.waitingProducts.push({ orderId, nbProducts });
 
-  res.sendStatus(204);
-});
-
-// Initialize server
-app.listen(5000, () => {
-  console.log("Running on port 5000.");
-});
-
-app.get("/api/shipping/waiting", (req, res) => {
-  res.statusCode(200).send(waitingProducts);
-
-  if (waitingProducts.length === 5) {
-    waitingProducts = 0;
+  if (process.waitingProducts.length === 5) {
+    process.waitingProducts = [];
+    res.status(200).send("Livrez moi car 5 articles");
+  } else {
+    res.sendStatus(204);
   }
 });
 
-// if (waitingProducts.length === 5) {
-//   await axios.get("/api/shipping/waiting");
-// }
+app.get("/api/shipping/waiting", (req, res) => {
+  res.status(200).send(process.waitingProducts);
+});
+
+// Initialize server
+httpServer.listen(8000, () => {
+  console.log("Running on port 5000.");
+});
 
 module.exports = app;
