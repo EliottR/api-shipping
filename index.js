@@ -36,6 +36,10 @@ app.post("/api/shipping", async (req, res) => {
           status: "Delivered",
         }
       );
+
+      await axios.post(
+        `https://shoppingmicroservices.vercel.app/api/client/order/${order.orderId}`
+      );
     }
 
     process.waitingOrders = [];
