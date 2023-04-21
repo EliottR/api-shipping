@@ -33,11 +33,14 @@ app.listen(5000, () => {
 
 app.get("/api/shipping/waiting", (req, res) => {
   res.statusCode(200).send(waitingProducts);
-  waitingProducts = [];
+
+  if (waitingProducts.length === 5) {
+    waitingProducts = 0;
+  }
 });
 
-if (waitingProducts.length === 5) {
-  axios.get("/api/shipping/waiting");
-}
+// if (waitingProducts.length === 5) {
+//   await axios.get("/api/shipping/waiting");
+// }
 
 module.exports = app;
